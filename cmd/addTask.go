@@ -1,5 +1,5 @@
 package cmd
 
-func addTask() {
+func addTask(Title string, Description string) {
 
 }

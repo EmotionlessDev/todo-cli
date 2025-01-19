@@ -1,11 +1,9 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Svirin Artyom <emotionlesscode@gmail.com>
 */
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +15,7 @@ var addCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		task := args[0]
-		fmt.Println("add called with task:", task)
+		addTask(task, "")
 	},
 }
 
