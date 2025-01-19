@@ -1,0 +1,21 @@
+# bin
+main
+*.exe
+*.out
+*.bin
+/build/
+
+# VSCode
+.vscode/
+
+# Goland
+.idea/
+
+# Others
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+/go.sum.old
+/go.sum.tmp
