@@ -5,7 +5,9 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/jedib0t/go-pretty/table"
 	"github.com/spf13/cobra"
 )
 
@@ -24,11 +26,14 @@ var listCmd = &cobra.Command{
 			return nil
 		}
 
-		fmt.Println("List of tasks:")
-		for _, task := range tasks.Tasks {
-			fmt.Printf("%d. %s\n", task.ID, task.Title)
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.SetStyle(table.StyleColoredBlueWhiteOnBlack)
+		t.AppendHeader(table.Row{"#", "Task", "Completed", "Created At", "Completed At"})
+		for i, task := range tasks.Tasks {
+			t.AppendRow([]interface{}{i + 1, task.Title, task.Completed, task.CreatedAt, task.CompletedAt})
 		}
-
+		t.Render()
 		return nil
 	},
 }

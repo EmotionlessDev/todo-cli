@@ -4,7 +4,11 @@ Copyright © 2025 Svirin Artyom <emotionlesscode@gmail.com>
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
+	"time"
 	"todo/internal/data"
 
 	"github.com/spf13/cobra"
@@ -13,10 +17,29 @@ import (
 var addCmd = &cobra.Command{
 	Use:   "add [taskName]",
 	Short: "add a new task",
-	Long:  `add a new task to the list of tasks`,
-	Args:  cobra.ExactArgs(1),
+	Long: `add a new task to the list of tasks
+	if taskName is not provided, it will be read from stdin
+	`,
+	Args: cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		title := args[0]
+		var title string
+
+		if len(args) > 0 {
+			title = args[0]
+		} else {
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			if err := scanner.Err(); err != nil {
+				return err
+			}
+
+			if len(scanner.Text()) == 0 {
+				return fmt.Errorf("task name can't be empty")
+			}
+
+			title = scanner.Text()
+		}
+		title = strings.TrimSpace(title)
 
 		tasks, err := LoadTasks()
 		if err != nil {
@@ -24,9 +47,10 @@ var addCmd = &cobra.Command{
 		}
 
 		newTask := data.Task{
-			ID:        len(tasks.Tasks) + 1,
-			Title:     title,
-			Completed: false,
+			Title:       title,
+			Completed:   false,
+			CreatedAt:   time.Now().Format(time.RFC3339),
+			CompletedAt: "",
 		}
 
 		tasks.Tasks = append(tasks.Tasks, newTask)
@@ -36,7 +60,7 @@ var addCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("Задача '%s' добавлена!\n", title)
+		fmt.Printf("Task '%s' added\n", title)
 		return nil
 	},
 }
