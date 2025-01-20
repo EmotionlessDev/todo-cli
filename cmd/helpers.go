@@ -5,13 +5,25 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 	"todo/internal/data"
 )
 
-const dataFile = "tasks.json"
+func GetDataFilePath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, "Library", "Application Support", "todo", "data.json"), nil
+}
 
 func LoadTasks() (data.TaskList, error) {
 	var tasks data.TaskList
+
+	dataFile, err := GetDataFilePath()
+	if err != nil {
+		return tasks, err
+	}
 
 	file, err := os.Open(dataFile)
 	if err != nil {
@@ -36,6 +48,17 @@ func LoadTasks() (data.TaskList, error) {
 }
 
 func SaveTasks(tasks data.TaskList) error {
+	dataFile, err := GetDataFilePath()
+	if err != nil {
+		return err
+	}
+
+	dir := filepath.Dir(dataFile)
+	err = os.MkdirAll(dir, 0755)
+	if err != nil {
+		return err
+	}
+
 	file, err := os.Create(dataFile)
 	if err != nil {
 		return err
@@ -46,6 +69,7 @@ func SaveTasks(tasks data.TaskList) error {
 	if err != nil {
 		return err
 	}
+
 	_, err = file.Write(js)
 	if err != nil {
 		return err
