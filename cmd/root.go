@@ -6,6 +6,7 @@ package cmd
 import (
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/spf13/cobra"
 )
 

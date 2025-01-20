@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  postgres:
+    build:
+      context: .docker/postgres
+      dockerfile: Dockerfile
+    container_name: todo-pg
+    environment:
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+      POSTGRES_DB: todo
+    volumes:
+     - todo-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  todo-data:
